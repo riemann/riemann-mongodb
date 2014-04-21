@@ -1,4 +1,4 @@
-Riemann Redis
+Riemann MongoDB
 =============
 
 Simple mongodb riemann client.
