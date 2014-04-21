@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+# Gathers MongoDB db.stats() and submits them to Riemann.
+
+require 'riemann/tools'
+
+class Riemann::Tools::Mongo
+  include Riemann::Tools
+  require 'mongo'
+
+  opt :mongo_host, "Mongo hostname", :default => 'localhost'
+  opt :mongo_port, "Mongo port", :default => 27017
+  opt :mongo_password, "Mongo password", :default => ''
+  opt :mongo_db, "Mongo database", :default => ''
+
+  def initialize
+    @db = ::Mongo::MongoClient.new(opts[:mongo_host], opts[:mongo_port]).db(opts[:mongo_db])
+  end
+
+  def tick
+    begin
+      @db.stats.each do |property, value|
+        data = {
+          :host    => opts[:mongo_host].dup,
+          :service => "mongodb #{property}",
+          :metric  => value.to_s,
+          :state   => value.to_s,
+          :tags    => ['mongodb']
+        }
+
+        report(data)
+      end
+    end
+
+  end
+
+end
+
+Riemann::Tools::Mongo.run
