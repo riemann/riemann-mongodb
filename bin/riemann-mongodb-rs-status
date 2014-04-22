@@ -8,6 +8,7 @@ class Riemann::Tools::Mongo
   include Riemann::Tools
   require 'mongo'
 
+  opt :host_prefix, "Prefix for event_host", :default => ''
   opt :mongo_host, "Mongo hostname", :default => 'localhost'
   opt :mongo_port, "Mongo port", :default => 27017
   opt :mongo_db, "Mongo database", :default => 'admin'
@@ -22,7 +23,7 @@ class Riemann::Tools::Mongo
       @db.command(@cmd)["members"].each do |member|
         member.each do |property, value|
           data = {
-            :host    => opts[:mongo_host].dup,
+            :host    => opts[:host_prefix] + member["name"],
             :service => "mongodb #{property}",
             :metric  => value.to_s,
             :state   => value.to_s,
