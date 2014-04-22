@@ -10,7 +10,6 @@ class Riemann::Tools::Mongo
 
   opt :mongo_host, "Mongo hostname", :default => 'localhost'
   opt :mongo_port, "Mongo port", :default => 27017
-  opt :mongo_password, "Mongo password", :default => ''
   opt :mongo_db, "Mongo database", :default => ''
 
   def initialize
