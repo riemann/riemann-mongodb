@@ -1,9 +1,12 @@
-Riemann MongoDB
+Riemann mongodb
 =============
 
 Simple mongodb riemann client.
 
-Submits the result of db.stats() query into riemann.
+
+A client which submits the result of db.stats() query into riemann.
+A second client to monitor replication set status, using rs.status() query.
+
 
 Get started
 ==========
@@ -11,4 +14,5 @@ Get started
 ``` bash
 gem install riemann-mongodb
 riemann-mongodb --help
+riemann-mongodb-rs-status --help
 ```
