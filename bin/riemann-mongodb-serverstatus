@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+# Runs serverStatus command, or db.serverStatus() from the shell and send metrics to riemann.
+
+require 'riemann/tools'
+
+class Riemann::Tools::Mongo
+  include Riemann::Tools
+  require 'mongo'
+
+  opt :mongo_host, "Mongo hostname", :default => 'localhost'
+  opt :mongo_port, "Mongo port", :default => 27017
+  opt :mongo_db, "Mongo database", :default => 'local'
+
+  def initialize
+  	@db = ::Mongo::MongoClient.new(opts[:mongo_host], opts[:mongo_port]).db(opts[:mongo_db])
+  	@cmd = {"serverStatus"=>1}
+  end
+
+  def tick
+    begin
+      response = @db.command(@cmd)
+    rescue => e
+      report(
+        :host    => opts[:mongo_host],
+        :service => "mongodb health",
+        :description => "Connection error: #{e.class} - #{e.message}"
+      )
+    end
+
+    return if response.nil?
+
+    response.each do |base_metric, rest_metric|
+      if rest_metric.is_a?(Hash)
+        rest_metric.each do |tag, value|        	
+          if !value.is_a? Fixnum
+            next
+          end
+          report(
+            :host    => opts[:mongo_host],
+            :service => "mongo." + base_metric.downcase + "." + tag.downcase,
+            :metric  => value.to_f,
+            :state   => "ok",
+            :tags    => ["mongodb"]
+          )
+        end
+      end
+    end
+  end
+end
+
+Riemann::Tools::Mongo.run
