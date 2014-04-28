@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Gathers MongoDB db.stats() and submits them to Riemann.
+# Gathers MongoDB replSetGetStatus command output (rs.status() from the shell) and submits them to Riemann.
 
 require 'riemann/tools'
 
@@ -20,21 +20,37 @@ class Riemann::Tools::Mongo
 
   def tick
     begin
-      @db.command(@cmd)["members"].each do |member|
-        member.each do |property, value|
-          data = {
-            :host    => opts[:host_prefix] + member["name"],
-            :service => "mongodb #{property}",
-            :metric  => value.to_s,
-            :state   => value.to_s,
-            :tags    => ['mongodb']
-          }
-
-          report(data)
-        end
-      end
+      response = @db.command(@cmd)
+    rescue => e
+      report(
+        :host    => opts[:host_prefix] + opts[:mongo_host].dup,
+        :service => "mongodb health",
+        :description => "Connection error: #{e.class} - #{e.message}"
+      )
     end
 
+    return if response.nil?
+
+    report(
+      :host    => opts[:host_prefix] + opts[:mongo_host].dup,
+      :service => "mongodb health",
+      :state   => "ok",
+      :description => "mongodb connection status ok"
+    )
+
+    response["members"].each do |member|
+      member.each do |property, value|
+        data = {
+          :host    => opts[:host_prefix] + opts[:mongo_host].dup,
+          :service => "mongodb #{property}",
+          :metric  => value.to_s,
+          :state   => value.to_s,
+          :tags    => ['mongodb']
+        }
+
+        report(data)
+      end
+    end
   end
 
 end

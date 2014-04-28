@@ -10,7 +10,7 @@ class Riemann::Tools::Mongo
 
   opt :mongo_host, "Mongo hostname", :default => 'localhost'
   opt :mongo_port, "Mongo port", :default => 27017
-  opt :mongo_db, "Mongo database", :default => ''
+  opt :mongo_db, "Mongo database", :default => 'local'
 
   def initialize
     @db = ::Mongo::MongoClient.new(opts[:mongo_host], opts[:mongo_port]).db(opts[:mongo_db])
