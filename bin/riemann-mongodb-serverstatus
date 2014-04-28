@@ -18,20 +18,20 @@ class Riemann::Tools::Mongo
   end
 
   def tick
-  	begin
-  	  response = @db.command(@cmd)
-  	rescue => e
-  	  report(
-  	  	:host    => opts[:mongo_host],
-  	  	:service => "mongodb health",
-  	  	:description => "Connection error: #{e.class} - #{e.message}"
-  	  )
-  	end
+    begin
+      response = @db.command(@cmd)
+    rescue => e
+      report(
+        :host    => opts[:mongo_host],
+        :service => "mongodb health",
+        :description => "Connection error: #{e.class} - #{e.message}"
+      )
+    end
 
-  	return if response.nil?
+    return if response.nil?
 
-  	response.each do |base_metric, rest_metric|
-  	  if rest_metric.is_a?(Hash)
+    response.each do |base_metric, rest_metric|
+      if rest_metric.is_a?(Hash)
         rest_metric.each do |tag, value|        	
           if !value.is_a? Fixnum
             next
