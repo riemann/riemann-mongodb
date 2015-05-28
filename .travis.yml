@@ -5,3 +5,4 @@ deploy:
   gem: riemann-mongodb
   on:
     branch: master
+    repo: riemann/riemann-mongodb
