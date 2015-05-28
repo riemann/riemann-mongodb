@@ -33,8 +33,4 @@ end
 Gem::PackageTask.new gemspec do |p|
 end
 
-RDoc::Task.new do |rd|
-  rd.main = 'Riemann mongodb'
-  rd.title = 'Riemann mongodb'
-  rd.rdoc_dir = 'doc'
-end
+task :default => :gem
