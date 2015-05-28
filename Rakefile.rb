@@ -19,9 +19,9 @@ gemspec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = 'MongoDB clients to submits metrics to Riemann.'
 
-  s.add_dependency 'riemann-tools', '>= 0.2.1'
-  s.add_dependency 'mongo', '>= 1.10.0'
-  s.add_dependency 'bson_ext', '>= 1.10.0'
+  s.add_dependency 'riemann-tools', '~> 0.2.1'
+  s.add_dependency 'mongo', '~> 1.10.0'
+  s.add_dependency 'bson_ext', '~> 1.10.0'
 
   s.files = FileList['bin/*', 'LICENSE', 'README.md'].to_a
   s.executables |= Dir.entries('bin/')
