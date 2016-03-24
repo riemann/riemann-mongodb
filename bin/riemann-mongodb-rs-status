@@ -12,9 +12,12 @@ class Riemann::Tools::Mongo
   opt :mongo_host, "Mongo hostname", :default => 'localhost'
   opt :mongo_port, "Mongo port", :default => 27017
   opt :mongo_db, "Mongo database", :default => 'admin'
+  opt :mongo_user, "Mongo user for authentication", :default => ''
+  opt :mongo_pass, "Mongo password for authentication", :default => ''
 
   def initialize
     @db = ::Mongo::MongoClient.new(opts[:mongo_host], opts[:mongo_port]).db(opts[:mongo_db])
+    @db.authenticate(opts[:mongo_user], opts[:mongo_pass]) unless opts[:mongo_user].empty? || opts[:mongo_pass].empty?
     @cmd = {"replSetGetStatus"=>1}
   end
 
