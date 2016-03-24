@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.rubyforge_project = 'riemann-mongodb'
   s.name = 'riemann-mongodb'
-  s.version = '0.3.2'
+  s.version = '0.3.3'
   s.author = 'Fede Borgnia'
   s.email = 'fborgnia@gmail.com'
   s.homepage = 'https://github.com/riemann/riemann-mongodb'
